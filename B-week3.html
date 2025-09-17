@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Concepts & Solidity Tutorial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-dark.min.css" media="(prefers-color-scheme: dark)">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        'primary-dark': '#4A49C7',
+                    }
+                }
+            },
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        .concept-card {
+            transition: all 0.3s ease;
+        }
+        .concept-card:hover {
+            transform: translateY(-2px);
+        }
+        .active-tab {
+            background-color: #5D5CDE;
+            color: white;
+        }
+        .code-container {
+            background: #f8f9fa;
+        }
+        .dark .code-container {
+            background: #2d3748;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-primary">Blockchain Concepts & Solidity Tutorial</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Comprehensive guide to blockchain fundamentals and smart contract development</p>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-16 z-40">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto space-x-1 py-2">
+                <button onclick="showTab('concepts')" id="concepts-tab" class="tab-btn px-4 py-2 rounded-lg whitespace-nowrap text-sm font-medium transition-colors active-tab">
+                    Blockchain Concepts
+                </button>
+                <button onclick="showTab('solidity')" id="solidity-tab" class="tab-btn px-4 py-2 rounded-lg whitespace-nowrap text-sm font-medium transition-colors bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600">
+                    Solidity Tutorial
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- Blockchain Concepts Tab -->
+        <div id="concepts-content" class="tab-content">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4 text-primary">Blockchain Concepts</h2>
+                <div class="grid gap-6">
+                    <!-- Concept cards will be generated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Solidity Tutorial Tab -->
+        <div id="solidity-content" class="tab-content hidden">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4 text-primary">Solidity Smart Contract Tutorial</h2>
+                <div class="space-y-8">
+                    <!-- Solidity tutorial content will be generated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Dark mode handling
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Blockchain concepts data
+        const blockchainConcepts = [
+            {
+                title: "Blockchain Structure & Forks",
+                content: `
+                    <h4 class="font-semibold mb-2">Blockchain Structure:</h4>
+                    <p class="mb-4">A blockchain consists of blocks linked cryptographically. Each block contains:</p>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Block Header:</strong> Contains metadata including previous block hash, merkle root, timestamp, and nonce</li>
+                        <li><strong>Transaction Data:</strong> The actual transactions or data being stored</li>
+                        <li><strong>Hash Pointer:</strong> Cryptographic link to the previous block</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Fork Events:</h4>
+                    <p class="mb-4">Forks occur when two or more blocks are found simultaneously at the same height:</p>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Natural Forks:</strong> Occur due to network latency and simultaneous mining</li>
+                        <li><strong>Fork Resolution:</strong> The network follows the longest chain rule</li>
+                        <li><strong>Chain Reconvergence:</strong> When new blocks are found, extending one fork, the network reconverges</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Fork Visualization Process:</h4>
+                    <ol class="list-decimal list-inside space-y-1">
+                        <li>All nodes initially have the same perspective</li>
+                        <li>Two blocks are found simultaneously</li>
+                        <li>Network splits as blocks propagate</li>
+                        <li>New block extends one fork</li>
+                        <li>Network reconverges on the longest chain</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Chain Growth & Quality",
+                content: `
+                    <h4 class="font-semibold mb-2">Chain Growth:</h4>
+                    <p class="mb-4">Chain growth refers to the rate at which new blocks are added to the blockchain:</p>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Bitcoin:</strong> Targets 1 block every 10 minutes</li>
+                        <li><strong>Difficulty Adjustment:</strong> Network adjusts mining difficulty to maintain consistent block times</li>
+                        <li><strong>Growth Rate:</strong> Measured in blocks per unit time</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Chain Quality (CQ):</h4>
+                    <p class="mb-4">Chain Quality measures the fraction of honest blocks in the longest chain:</p>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <code>CQ = (# of honest blocks) / (# of all blocks in longest chain)</code>
+                    </div>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Ideal CQ:</strong> Close to 1.0 (all blocks are honest)</li>
+                        <li><strong>Security Implication:</strong> Lower CQ indicates more adversarial influence</li>
+                        <li><strong>Example:</strong> If longest chain has 6 blocks with 4 honest and 2 adversarial, CQ = 4/6 = 0.667</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Factors Affecting Chain Quality:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Adversarial mining power ratio</li>
+                        <li>Network propagation delays</li>
+                        <li>Attack strategies employed</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Selfish Mining Attack",
+                content: `
+                    <h4 class="font-semibold mb-2">Overview:</h4>
+                    <p class="mb-4">Selfish mining is a strategy where miners with significant hashing power secretly mine blocks and withhold them to gain an unfair advantage over honest miners.</p>
+                    
+                    <h4 class="font-semibold mb-2">Attack Mechanism:</h4>
+                    <ol class="list-decimal list-inside mb-4 space-y-1">
+                        <li><strong>Secret Mining:</strong> Adversary mines on longest chain tip but keeps blocks private</li>
+                        <li><strong>Strategic Release:</strong> When honest miner publishes a block, adversary releases a previously mined block at the same level</li>
+                        <li><strong>Tie Breaking:</strong> Adversary can influence tie-breaking in their favor</li>
+                        <li><strong>Chain Extension:</strong> Honest miners end up mining on adversarial blocks</li>
+                    </ol>
+                    
+                    <h4 class="font-semibold mb-2">Attack Phases:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Build Phase:</strong> Adversary maintains private chain longer than public</li>
+                        <li><strong>Release Phase:</strong> Strategic revelation of private blocks</li>
+                        <li><strong>Competition Phase:</strong> Racing against honest miners</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Impact:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Revenue Increase:</strong> Adversary can earn more than their fair share</li>
+                        <li><strong>Waste of Resources:</strong> Honest mining effort is wasted</li>
+                        <li><strong>Network Instability:</strong> Increased fork frequency</li>
+                        <li><strong>Reduced Chain Quality:</strong> More adversarial blocks in final chain</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Threshold:</h4>
+                    <p>The attack becomes profitable when adversarial mining power exceeds approximately 25% of total network power, depending on network conditions.</p>
+                `
+            },
+            {
+                title: "Fruitchains Protocol",
+                content: `
+                    <h4 class="font-semibold mb-2">Main Concept:</h4>
+                    <p class="mb-4">Fruitchains separates transactions (and their rewards) from blocks in the longest chain to improve chain quality and security.</p>
+                    
+                    <h4 class="font-semibold mb-2">Key Components:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Proposer Blocks:</strong> Determine the blockchain structure and consensus</li>
+                        <li><strong>Transaction Blocks (Fruits):</strong> Contain actual transactions and hang from proposer blocks</li>
+                        <li><strong>Confirmed Parent:</strong> Recently stabilized proposer block that transaction blocks reference</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Recency Condition:</h4>
+                    <p class="mb-4">A transaction block B is considered recent with respect to proposer chain C if:</p>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <code>Confirmed parent of B is at most R blocks deep in C</code>
+                    </div>
+                    <p class="mb-4">Where R is the recency parameter that ensures freshness.</p>
+                    
+                    <h4 class="font-semibold mb-2">Short Time Scale Optimal Chain Quality:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Problem Addressed:</strong> Block withholding attacks on transaction blocks</li>
+                        <li><strong>Solution:</strong> Require transaction blocks to reference recent confirmed proposer blocks</li>
+                        <li><strong>Benefit:</strong> Prevents adversaries from suddenly releasing large numbers of old transaction blocks</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Advantages:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Better chain quality in short time windows</li>
+                        <li>Resistance to block withholding attacks</li>
+                        <li>Separation of consensus and transaction processing</li>
+                        <li>More stable reward distribution</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Block Withholding Attack",
+                content: `
+                    <h4 class="font-semibold mb-2">Definition:</h4>
+                    <p class="mb-4">Block withholding attack involves miners deliberately keeping successfully mined blocks private and releasing them strategically to disrupt the network or manipulate conditions.</p>
+                    
+                    <h4 class="font-semibold mb-2">Attack Strategy:</h4>
+                    <ol class="list-decimal list-inside mb-4 space-y-1">
+                        <li><strong>Normal Mining:</strong> Attacker mines blocks following normal protocols</li>
+                        <li><strong>Strategic Withholding:</strong> Instead of broadcasting immediately, blocks are kept private</li>
+                        <li><strong>Sudden Release:</strong> Large number of withheld blocks released simultaneously</li>
+                        <li><strong>Market Manipulation:</strong> Timing chosen to maximize disruption or profit</li>
+                    </ol>
+                    
+                    <h4 class="font-semibold mb-2">Comparison with Selfish Mining:</h4>
+                    <div class="overflow-x-auto mb-4">
+                        <table class="min-w-full bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <thead class="bg-gray-100 dark:bg-gray-700">
+                                <tr>
+                                    <th class="px-4 py-2 text-left">Aspect</th>
+                                    <th class="px-4 py-2 text-left">Selfish Mining</th>
+                                    <th class="px-4 py-2 text-left">Block Withholding</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">Goal</td>
+                                    <td class="px-4 py-2">Increase mining rewards</td>
+                                    <td class="px-4 py-2">Disrupt network/manipulate market</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">Strategy</td>
+                                    <td class="px-4 py-2">Maintain private chain</td>
+                                    <td class="px-4 py-2">Withhold individual blocks</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">Release Pattern</td>
+                                    <td class="px-4 py-2">Strategic based on chain length</td>
+                                    <td class="px-4 py-2">Sudden mass release</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Impact on Network:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Delayed Confirmations:</strong> Transactions take longer to confirm</li>
+                        <li><strong>Network Confusion:</strong> Sudden appearance of many blocks</li>
+                        <li><strong>Fork Creation:</strong> Increased probability of network forks</li>
+                        <li><strong>Market Uncertainty:</strong> Can cause price volatility</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Mitigation Strategies:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Implement recency requirements for blocks</li>
+                        <li>Network monitoring for unusual block patterns</li>
+                        <li>Economic incentives for timely block broadcasting</li>
+                        <li>Protocol-level penalties for withholding behavior</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Performance & Throughput",
+                content: `
+                    <h4 class="font-semibold mb-2">Throughput Definition:</h4>
+                    <p class="mb-4">Throughput measures the number of transactions processed per second (tx/s) by the blockchain network.</p>
+                    
+                    <h4 class="font-semibold mb-2">Current Performance:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Bitcoin:</strong> ~7 tx/s</li>
+                        <li><strong>Ethereum:</strong> ~20-27 tx/s</li>
+                        <li><strong>Traditional Systems:</strong> Visa processes ~65,000 tx/s</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Throughput Formula:</h4>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <code>Throughput = [(1-β)λ / (1 + (1-β)λΔ)] × B</code>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Parameters:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>β:</strong> Fraction of adversarial hash power (cannot be controlled)</li>
+                        <li><strong>λ:</strong> Mining rate (controllable by adjusting difficulty)</li>
+                        <li><strong>B:</strong> Block size (controllable by allowing more transactions)</li>
+                        <li><strong>Δ:</strong> Network delay (proportional to block size B)</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Throughput Limitations:</h4>
+                    <p class="mb-4">The throughput is fundamentally limited by the product λΔ (mining rate × network delay):</p>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <code>Throughput ∝ (1-β)λΔ / (1 + (1-β)λΔ)</code>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Scaling Challenges:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Increasing λ:</strong> Faster mining leads to more forks</li>
+                        <li><strong>Increasing B:</strong> Larger blocks increase network delay Δ</li>
+                        <li><strong>Network Delay:</strong> Physical limitations of data propagation</li>
+                        <li><strong>Security Trade-offs:</strong> Changes affect decentralization and security</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Approaches to Improve Throughput:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Layer 1 Solutions:</strong> Modify the base protocol (sharding, new consensus)</li>
+                        <li><strong>Layer 2 Solutions:</strong> Build on top of existing blockchains (payment channels, rollups)</li>
+                        <li><strong>Alternative Consensus:</strong> Move away from proof-of-work</li>
+                    </ul>
+                `
+            },
+            {
+                title: "GHOST Protocol",
+                content: `
+                    <h4 class="font-semibold mb-2">GHOST: Greedy Heaviest-Observed Sub-Tree</h4>
+                    <p class="mb-4">GHOST modifies the traditional longest chain rule to consider the weight of entire subtrees rather than just chain length.</p>
+                    
+                    <h4 class="font-semibold mb-2">Key Innovation:</h4>
+                    <p class="mb-4">Instead of mining on the tip of the longest chain, miners mine on the tip of the heaviest subtree (GHOST chain).</p>
+                    
+                    <h4 class="font-semibold mb-2">How GHOST Works:</h4>
+                    <ol class="list-decimal list-inside mb-4 space-y-1">
+                        <li><strong>Weight Calculation:</strong> Each block's weight includes all descendant blocks in its subtree</li>
+                        <li><strong>Path Selection:</strong> At each fork, choose the child with the heaviest subtree</li>
+                        <li><strong>Chain Construction:</strong> Follow the path of heaviest subtrees to find the main chain</li>
+                        <li><strong>Mining Target:</strong> Mine on the tip of this GHOST chain</li>
+                    </ol>
+                    
+                    <h4 class="font-semibold mb-2">Advantages over Longest Chain:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Embrace Forking:</strong> Forked blocks still contribute to security</li>
+                        <li><strong>Higher Mining Rate:</strong> Can safely increase block production rate</li>
+                        <li><strong>Better Throughput:</strong> More blocks mean more transactions</li>
+                        <li><strong>Reduced Waste:</strong> Orphaned blocks still have value</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Security Against Private Attacks:</h4>
+                    <p class="mb-4">GHOST is more resistant to private attacks because:</p>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>All blocks in the subtree count toward weight</li>
+                        <li>Harder for adversary to outweigh honest miners</li>
+                        <li>Forking doesn't waste honest mining effort</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Example Scenario:</h4>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <p class="mb-2"><strong>Longest Chain:</strong> 1 → 2 → 3 (length 3)</p>
+                        <p class="mb-2"><strong>GHOST Chain:</strong> 1 → 5 → 4 (considering subtree weights)</p>
+                        <p>The GHOST protocol might choose the second path if the subtree rooted at block 5 has more total blocks.</p>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Implementation Considerations:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>More complex than longest chain rule</li>
+                        <li>Requires tracking entire blockchain structure</li>
+                        <li>May be vulnerable to different attack vectors</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Balance Attack on GHOST",
+                content: `
+                    <h4 class="font-semibold mb-2">Attack Overview:</h4>
+                    <p class="mb-4">Balance attack exploits GHOST's reliance on subtree weights by maintaining two competing subtrees with equal weights, causing the network to oscillate between them.</p>
+                    
+                    <h4 class="font-semibold mb-2">Attack Mechanism:</h4>
+                    <ol class="list-decimal list-inside mb-4 space-y-1">
+                        <li><strong>Create Two Chains:</strong> Adversary helps maintain two competing subtrees</li>
+                        <li><strong>Split Honest Mining:</strong> Honest miners divide their effort between the two chains</li>
+                        <li><strong>Strategic Block Release:</strong> Adversary reveals private blocks to keep subtree weights balanced</li>
+                        <li><strong>Maintain Equilibrium:</strong> Prevents either subtree from becoming definitively heavier</li>
+                    </ol>
+                    
+                    <h4 class="font-semibold mb-2">Attack Execution:</h4>
+                    <p class="mb-4">The adversary maintains two GHOST chains with tips that have nearly equal subtree weights:</p>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Chain 1:</strong> Subtree weight = 21 blocks</li>
+                        <li><strong>Chain 2:</strong> Subtree weight = 22 blocks</li>
+                        <li><strong>Private Blocks:</strong> Adversary releases blocks strategically to balance weights</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Required Conditions:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Network Control:</strong> More sophisticated than simple private attacks</li>
+                        <li><strong>Timing Precision:</strong> Must release blocks at exact moments</li>
+                        <li><strong>Hash Power:</strong> Sufficient mining power to maintain balance</li>
+                        <li><strong>Network Knowledge:</strong> Understanding of honest miner behavior</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Attack Consequences:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Safety Violation:</strong> Ledger oscillates between two different states</li>
+                        <li><strong>Double Spending:</strong> Transactions may be confirmed then reverted</li>
+                        <li><strong>Network Confusion:</strong> Miners unsure which chain to follow</li>
+                        <li><strong>Reduced Security:</strong> Effective security threshold drops to Bitcoin levels</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Impact on GHOST:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Throughput Limitations:</strong> Cannot safely increase mining rate as much as hoped</li>
+                        <li><strong>Security Threshold:</strong> Adversarial tolerance similar to longest chain</li>
+                        <li><strong>Complexity vs. Benefit:</strong> Added complexity doesn't provide expected security improvement</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Lessons Learned:</h4>
+                    <p>The balance attack demonstrates that worst-case attacks for GHOST differ from longest chain protocols, and security analysis must consider new attack vectors when modifying consensus rules.</p>
+                `
+            },
+            {
+                title: "Bitcoin-NG (Next Generation)",
+                content: `
+                    <h4 class="font-semibold mb-2">Core Innovation:</h4>
+                    <p class="mb-4">Bitcoin-NG separates the blockchain into two types of blocks to improve throughput while maintaining the basic longest chain structure.</p>
+                    
+                    <h4 class="font-semibold mb-2">Two-Block Architecture:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Proposer Blocks:</strong> Mined using proof-of-work on the longest chain</li>
+                        <li><strong>Transaction Blocks:</strong> Signed by the current proposer, contain actual transactions</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">How It Works:</h4>
+                    <ol class="list-decimal list-inside mb-4 space-y-1">
+                        <li><strong>Proposer Election:</strong> Miners compete to mine proposer blocks (like normal Bitcoin)</li>
+                        <li><strong>Transaction Processing:</strong> Winning proposer signs multiple transaction blocks</li>
+                        <li><strong>Block Frequency:</strong> Proposer blocks are infrequent, transaction blocks are frequent</li>
+                        <li><strong>Chain Extension:</strong> Next proposer block extends the chain, cycle repeats</li>
+                    </ol>
+                    
+                    <h4 class="font-semibold mb-2">Advantages:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>High Throughput:</strong> Transaction blocks only limited by network capacity</li>
+                        <li><strong>Permissionless:</strong> Maintains Bitcoin's permissionless nature</li>
+                        <li><strong>Familiar Structure:</strong> Builds on longest chain protocol</li>
+                        <li><strong>Scalable:</strong> Can process many more transactions per second</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Disadvantages:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Reduced Security:</strong> Doesn't have full security of longest chain for transaction blocks</li>
+                        <li><strong>Predictability Issues:</strong> Current proposer is known, creating attack vectors</li>
+                        <li><strong>Centralization Risk:</strong> Proposer has temporary control over transaction ordering</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Security Model:</h4>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <p class="mb-2"><strong>Proposer Blocks:</strong> Full Bitcoin-level security</p>
+                        <p><strong>Transaction Blocks:</strong> Security depends on proposer honesty</p>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Use Cases:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>High-frequency trading applications</li>
+                        <li>Micropayment systems</li>
+                        <li>Applications requiring fast transaction confirmation</li>
+                        <li>Networks where throughput is more critical than maximum security</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Bribing Attack on Bitcoin-NG",
+                content: `
+                    <h4 class="font-semibold mb-2">Attack Foundation:</h4>
+                    <p class="mb-4">Bitcoin-NG's vulnerability to bribing attacks stems from the predictability of transaction block proposers and the ability to modify transaction blocks after creation.</p>
+                    
+                    <h4 class="font-semibold mb-2">Bitcoin vs Bitcoin-NG Security:</h4>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <p class="mb-2"><strong>Bitcoin Resistance:</strong></p>
+                        <ul class="list-disc list-inside mb-2 ml-4 space-y-1">
+                            <li>Unpredictability: Unknown who will mine next block</li>
+                            <li>Immutability: Block sealed by nonce, cannot be altered</li>
+                        </ul>
+                        <p class="mb-2"><strong>Bitcoin-NG Vulnerability:</strong></p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li>Predictability: Current proposer is known</li>
+                            <li>Mutability: Transaction blocks can be modified by proposer</li>
+                        </ul>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Types of Bribing Attacks:</h4>
+                    
+                    <h5 class="font-medium mb-2">1. Direct Bribery:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>Attacker pays current proposer to include/exclude specific transactions</li>
+                        <li>Proposer can be contacted directly since their identity is known</li>
+                        <li>No need to compete in mining lottery</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">2. Slow-down Attack:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>Attacker bribes proposer to delay transaction inclusion</li>
+                        <li>Not a direct security attack but affects network performance</li>
+                        <li>Can be used for market manipulation or DoS</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Attack Scenarios:</h4>
+                    <ol class="list-decimal list-inside mb-4 space-y-2">
+                        <li><strong>Transaction Censorship:</strong> Pay proposer to exclude competitor's transactions</li>
+                        <li><strong>Transaction Reordering:</strong> Pay to prioritize specific transactions for front-running</li>
+                        <li><strong>Double Spending:</strong> Bribe to replace transaction blocks with conflicting versions</li>
+                        <li><strong>Network Disruption:</strong> Pay to slow down transaction processing</li>
+                    </ol>
+                    
+                    <h4 class="font-semibold mb-2">Economic Incentives:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Profitable Bribes:</strong> May exceed normal transaction fees</li>
+                        <li><strong>Risk Assessment:</strong> Proposer weighs bribe value against reputation risk</li>
+                        <li><strong>Detection Difficulty:</strong> Hard to prove malicious behavior vs. network issues</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Mitigation Strategies:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Frequent Proposer Changes:</strong> Reduce time window for bribing</li>
+                        <li><strong>Commit-Reveal Schemes:</strong> Hide transaction content until commitment</li>
+                        <li><strong>Slashing Mechanisms:</strong> Penalize detected malicious behavior</li>
+                        <li><strong>Reputation Systems:</strong> Track proposer behavior over time</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Real-world Implications:</h4>
+                    <p>Bribing attacks highlight the trade-off between scalability and security in blockchain design, showing that optimizations must carefully consider new attack vectors.</p>
+                `
+            },
+            {
+                title: "Scaling Solutions Overview",
+                content: `
+                    <h4 class="font-semibold mb-2">Scaling Challenge:</h4>
+                    <p class="mb-4">Blockchain networks face fundamental scalability limitations due to the blockchain trilemma: balancing decentralization, security, and scalability.</p>
+                    
+                    <h4 class="font-semibold mb-2">Layer 1 (L1) Scaling:</h4>
+                    <p class="mb-4">Improvements to the base blockchain protocol itself:</p>
+                    
+                    <h5 class="font-medium mb-2">Throughput Improvements:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Larger Blocks:</strong> Increase block size to fit more transactions</li>
+                        <li><strong>Faster Blocks:</strong> Reduce block time intervals</li>
+                        <li><strong>Better Consensus:</strong> GHOST, Bitcoin-NG, other protocols</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Latency Improvements:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Fast Confirmation:</strong> Prism protocol with voting chains</li>
+                        <li><strong>Parallel Processing:</strong> Multiple concurrent chains</li>
+                        <li><strong>Instant Finality:</strong> Byzantine fault tolerant consensus</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Resource Efficiency:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Sharding:</strong> Divide network into parallel processing shards</li>
+                        <li><strong>Proof of Stake:</strong> Replace energy-intensive mining</li>
+                        <li><strong>State Compression:</strong> Reduce storage requirements</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Layer 2 (L2) Scaling:</h4>
+                    <p class="mb-4">Build additional protocols on top of existing blockchains:</p>
+                    
+                    <h5 class="font-medium mb-2">Payment Channels:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Lightning Network:</strong> Bitcoin payment channels</li>
+                        <li><strong>State Channels:</strong> Generalized off-chain state updates</li>
+                        <li><strong>Channel Networks:</strong> Route payments through multiple channels</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Rollups:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Optimistic Rollups:</strong> Assume validity, challenge if needed</li>
+                        <li><strong>ZK Rollups:</strong> Cryptographic proofs of correct execution</li>
+                        <li><strong>Data Availability:</strong> Store transaction data on main chain</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Trade-offs Comparison:</h4>
+                    <div class="overflow-x-auto mb-4">
+                        <table class="min-w-full bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <thead class="bg-gray-100 dark:bg-gray-700">
+                                <tr>
+                                    <th class="px-4 py-2 text-left">Approach</th>
+                                    <th class="px-4 py-2 text-left">Scalability</th>
+                                    <th class="px-4 py-2 text-left">Security</th>
+                                    <th class="px-4 py-2 text-left">Decentralization</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">L1 - Larger Blocks</td>
+                                    <td class="px-4 py-2">High</td>
+                                    <td class="px-4 py-2">Medium</td>
+                                    <td class="px-4 py-2">Low</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">L1 - Sharding</td>
+                                    <td class="px-4 py-2">Very High</td>
+                                    <td class="px-4 py-2">Medium</td>
+                                    <td class="px-4 py-2">Medium</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">L2 - Payment Channels</td>
+                                    <td class="px-4 py-2">Very High</td>
+                                    <td class="px-4 py-2">High</td>
+                                    <td class="px-4 py-2">High</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">L2 - Rollups</td>
+                                    <td class="px-4 py-2">High</td>
+                                    <td class="px-4 py-2">High</td>
+                                    <td class="px-4 py-2">High</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `
+            },
+            {
+                title: "Prism Protocol",
+                content: `
+                    <h4 class="font-semibold mb-2">Core Innovation:</h4>
+                    <p class="mb-4">Prism deconstructs Bitcoin's monolithic blockchain into specialized components to achieve fast confirmation while maintaining security.</p>
+                    
+                    <h4 class="font-semibold mb-2">Three-Component Architecture:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Proposer Blocks:</strong> Propose transactions for inclusion (use longest chain rule)</li>
+                        <li><strong>Voter Blocks:</strong> Vote on proposed transactions (many parallel voting chains)</li>
+                        <li><strong>Transaction Blocks:</strong> Contain actual transaction data</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Consensus Rules:</h4>
+                    
+                    <h5 class="font-medium mb-2">Proposing Rule:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>Follow longest chain protocol for proposer blocks</li>
+                        <li>Miners propose new transactions at each level</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Voting Rules:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>Each voter chain votes for exactly one proposer block per level</li>
+                        <li>Each voter block votes for all proposer levels not yet voted by its parent</li>
+                        <li>Multiple parallel voter chains provide redundancy</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Mining Rule:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>Honest miners randomly choose to mine proposer, voter, or transaction blocks</li>
+                        <li>Equal probability distribution across block types</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Ledger Construction:</h4>
+                    <ol class="list-decimal list-inside mb-4 space-y-1">
+                        <li><strong>Collect Votes:</strong> For each proposer level, count votes from all voter chains</li>
+                        <li><strong>Select Winner:</strong> Choose proposer block with maximum votes at each level</li>
+                        <li><strong>Order Transactions:</strong> Process winning proposer blocks in level order</li>
+                        <li><strong>Build Ledger:</strong> Apply transactions to construct final ledger state</li>
+                    </ol>
+                    
+                    <h4 class="font-semibold mb-2">Fast Confirmation:</h4>
+                    <p class="mb-4">Prism achieves fast confirmation through the "bag of weak classifiers" principle:</p>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <p class="mb-2"><strong>Bitcoin:</strong> 1-deep confirmation has ~45% reversal probability</p>
+                        <p class="mb-2"><strong>Prism:</strong> 1000 votes with each 45% reversal probability</p>
+                        <p><strong>Result:</strong> Probability of reverting 500+ votes < 0.0006</p>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Security Analysis:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Decoupled Confirmation:</strong> Latency doesn't depend on security level</li>
+                        <li><strong>Statistical Security:</strong> Many weak votes create strong confirmation</li>
+                        <li><strong>Parallel Processing:</strong> Voting chains can be processed independently</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Advantages:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Sub-second Confirmation:</strong> Fast transaction confirmation</li>
+                        <li><strong>High Throughput:</strong> Parallel processing increases capacity</li>
+                        <li><strong>Maintained Security:</strong> Doesn't compromise on security guarantees</li>
+                        <li><strong>Flexible Architecture:</strong> Can tune confirmation speed vs. security</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Implementation Challenges:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Complex protocol with multiple interacting components</li>
+                        <li>Higher network overhead due to multiple block types</li>
+                        <li>Need for careful parameter tuning</li>
+                        <li>Requires coordination between different chains</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Sharding Concepts",
+                content: `
+                    <h4 class="font-semibold mb-2">Sharding Overview:</h4>
+                    <p class="mb-4">Sharding divides the blockchain network into smaller, parallel processing units called shards, each handling a subset of transactions independently.</p>
+                    
+                    <h4 class="font-semibold mb-2">Basic Sharding Architecture:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Shard Division:</strong> Network divided into K parallel shards</li>
+                        <li><strong>Node Allocation:</strong> Consensus nodes assigned to specific shards</li>
+                        <li><strong>Independent Processing:</strong> Each shard runs its own consensus</li>
+                        <li><strong>State Partitioning:</strong> Global state divided among shards</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Resource Efficiency:</h4>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <p class="mb-2"><strong>Communication:</strong> Transactions only traverse relevant shard</p>
+                        <p class="mb-2"><strong>Storage:</strong> Nodes store only their shard's state</p>
+                        <p><strong>Compute:</strong> Nodes validate only their shard's transactions</p>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Node-to-Shard Allocation (N2S):</h4>
+                    <p class="mb-4">Critical component that determines which nodes participate in which shards:</p>
+                    
+                    <h5 class="font-medium mb-2">Random Allocation:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>Nodes randomly assigned to shards</li>
+                        <li>Prevents adversaries from targeting specific shards</li>
+                        <li>Requires periodic reshuffling for security</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Beacon Chain:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>Generates randomness for shard allocation</li>
+                        <li>Coordinates the overall network</li>
+                        <li>Manages cross-shard communication</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Major Challenges:</h4>
+                    
+                    <h5 class="font-medium mb-2">1. Reduced Security:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Concentration Attack:</strong> Adversary focuses on one shard</li>
+                        <li><strong>Smaller Validator Sets:</strong> Each shard has fewer validators</li>
+                        <li><strong>Proportional Security:</strong> Security inversely proportional to number of shards</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">2. Cross-Shard Transactions:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Complexity:</strong> Transferring assets between shards</li>
+                        <li><strong>Atomic Execution:</strong> Ensuring transaction consistency</li>
+                        <li><strong>Fraud Prevention:</strong> Preventing double-spending across shards</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">3. Adaptive Adversaries:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Migration Attacks:</strong> Adversary follows vulnerable shards</li>
+                        <li><strong>Timing Attacks:</strong> Exploit reshuffling periods</li>
+                        <li><strong>Information Advantage:</strong> Adversary learns allocation before honest nodes</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Security Requirements:</h4>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <p class="mb-2"><strong>Honest Majority per Shard:</strong> Need ≥ 51% honest nodes in each shard</p>
+                        <p class="mb-2"><strong>Minimum Shard Size:</strong> Each shard needs sufficient validators</p>
+                        <p><strong>Regular Reshuffling:</strong> Periodic reallocation to maintain security</p>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Blockchain Trilemma in Sharding:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Scalability:</strong> ✓ High throughput through parallel processing</li>
+                        <li><strong>Security:</strong> ⚠️ Reduced due to smaller validator sets</li>
+                        <li><strong>Decentralization:</strong> ⚠️ May require identity management</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Real-world Examples:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Ethereum 2.0:</strong> 64 shards with beacon chain coordination</li>
+                        <li><strong>Polkadot:</strong> Parachain architecture with relay chain</li>
+                        <li><strong>Near Protocol:</strong> Dynamic sharding with nightshade consensus</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Uniconsensus vs Multiconsensus",
+                content: `
+                    <h4 class="font-semibold mb-2">Fundamental Approaches to Sharding:</h4>
+                    <p class="mb-4">Two primary architectural approaches for implementing blockchain sharding, each with distinct trade-offs between security, scalability, and identity requirements.</p>
+                    
+                    <h4 class="font-semibold mb-2">Multiconsensus Architecture:</h4>
+                    <p class="mb-4">Each shard operates as an independent blockchain with its own consensus mechanism.</p>
+                    
+                    <h5 class="font-medium mb-2">Key Characteristics:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Independent Chains:</strong> Each shard is a separate blockchain</li>
+                        <li><strong>Node-to-Shard Allocation:</strong> Requires identity-based node assignment</li>
+                        <li><strong>Separate Consensus:</strong> Each shard runs its own consensus protocol</li>
+                        <li><strong>Beacon Chain Coordination:</strong> Central chain manages shard allocation</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Advantages:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>High Throughput:</strong> True parallel processing</li>
+                        <li><strong>Independent Operation:</strong> Shards can operate independently</li>
+                        <li><strong>Mature Design:</strong> Well-understood consensus mechanisms</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Disadvantages:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Reduced Security:</strong> Adversary can concentrate on one shard</li>
+                        <li><strong>Identity Requirement:</strong> Needs node identification for allocation</li>
+                        <li><strong>Complex Cross-shard:</strong> Difficult inter-shard communication</li>
+                        <li><strong>Adaptive Adversary Vulnerability:</strong> Attacker can follow allocations</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Uniconsensus Architecture:</h4>
+                    <p class="mb-4">Single consensus mechanism governs all shards through a shared ordering chain with sortition-based shard selection.</p>
+                    
+                    <h5 class="font-medium mb-2">Key Components:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Global Ordering Chain:</strong> Single proposer chain for all shards</li>
+                        <li><strong>Sortition-based Mining:</strong> Random selection of shard for each block</li>
+                        <li><strong>Self-allocation:</strong> Nodes choose which shards to maintain</li>
+                        <li><strong>Shared Security:</strong> All shards share the same security level</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Block Structure:</h5>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <p class="mb-2"><strong>Meta Block Contains:</strong></p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li>Shard ID (determined by sortition)</li>
+                            <li>Proposer content (ordering information)</li>
+                            <li>Shard content (shard-specific transactions)</li>
+                        </ul>
+                    </div>
+                    
+                    <h5 class="font-medium mb-2">Advantages:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Identity-free:</strong> No need for node identification</li>
+                        <li><strong>Shared Security:</strong> All shards inherit main chain security</li>
+                        <li><strong>Adaptive Resistance:</strong> Harder for adversaries to target specific shards</li>
+                        <li><strong>Simpler Cross-shard:</strong> Single ordering chain facilitates communication</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Disadvantages:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Liveness Issues:</strong> Shard with adversarial majority can halt</li>
+                        <li><strong>Complex Protocol:</strong> More intricate than traditional approaches</li>
+                        <li><strong>Bootstrapping Challenges:</strong> Nodes need efficient shard state sync</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Dynamic Self-Allocation (DSA):</h4>
+                    <p class="mb-4">Uniconsensus feature where honest nodes adaptively reallocate to defend against attacks:</p>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Attack Detection:</strong> Nodes monitor shard health</li>
+                        <li><strong>Adaptive Response:</strong> Honest nodes migrate to attacked shards</li>
+                        <li><strong>Automatic Rebalancing:</strong> System self-heals from attacks</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Comparison Summary:</h4>
+                    <div class="overflow-x-auto mb-4">
+                        <table class="min-w-full bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <thead class="bg-gray-100 dark:bg-gray-700">
+                                <tr>
+                                    <th class="px-4 py-2 text-left">Aspect</th>
+                                    <th class="px-4 py-2 text-left">Multiconsensus</th>
+                                    <th class="px-4 py-2 text-left">Uniconsensus</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">Identity Requirement</td>
+                                    <td class="px-4 py-2">Required</td>
+                                    <td class="px-4 py-2">Not Required</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">Security Model</td>
+                                    <td class="px-4 py-2">Per-shard security</td>
+                                    <td class="px-4 py-2">Shared global security</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">Liveness</td>
+                                    <td class="px-4 py-2">High</td>
+                                    <td class="px-4 py-2">May be compromised</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 font-medium">Adaptive Attacks</td>
+                                    <td class="px-4 py-2">Vulnerable</td>
+                                    <td class="px-4 py-2">Resistant</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `
+            },
+            {
+                title: "State Commitments & Fraud Proofs",
+                content: `
+                    <h4 class="font-semibold mb-2">State Commitments Overview:</h4>
+                    <p class="mb-4">State commitments are cryptographic commitments to the execution state of a shard, enabling efficient bootstrapping and state verification without downloading the entire ledger history.</p>
+                    
+                    <h4 class="font-semibold mb-2">Bootstrapping Problem:</h4>
+                    <p class="mb-4">When nodes need to join a new shard or recover from failure:</p>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Traditional Approach:</strong> Download and replay entire shard history</li>
+                        <li><strong>Efficiency Issue:</strong> Extremely slow for mature shards with long history</li>
+                        <li><strong>Storage Problem:</strong> Requires massive storage for full history</li>
+                        <li><strong>Network Bandwidth:</strong> Heavy load on network resources</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">State Commitment Solution:</h4>
+                    <ol class="list-decimal list-inside mb-4 space-y-1">
+                        <li><strong>Download Latest State:</strong> Get current shard state instead of full history</li>
+                        <li><strong>Verify with Commitment:</strong> Use cryptographic proof to verify state correctness</li>
+                        <li><strong>Merkle Tree Root:</strong> State commitment is root of Merkle tree of execution state</li>
+                        <li><strong>Fast Sync:</strong> Node can participate immediately after verification</li>
+                    </ol>
+                    
+                    <h4 class="font-semibold mb-2">Multiconsensus State Commitments:</h4>
+                    <p class="mb-4">Relies on honest majority assumption within each shard:</p>
+                    
+                    <h5 class="font-medium mb-2">Approach 1: Majority Signature</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>State commitment is valid if signed by majority of shard validators</li>
+                        <li>Relies on assumption that each shard has honest majority</li>
+                        <li>Simple to implement and verify</li>
+                        <li>Vulnerable if adversary gains control of shard</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Approach 2: Ledger Finalization</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li>State commitment is valid if included in finalized shard ledger</li>
+                        <li>Uses shard's consensus mechanism for validation</li>
+                        <li>Inherits security properties of underlying consensus</li>
+                        <li>May have longer confirmation times</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Uniconsensus State Commitments:</h4>
+                    <p class="mb-4">More complex due to lack of honest majority assumption per shard:</p>
+                    
+                    <h5 class="font-medium mb-2">Challenge:</h5>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>No Honest Majority:</strong> Cannot assume shard has honest majority</li>
+                        <li><strong>No Coupled Validation:</strong> Main chain doesn't validate shard execution</li>
+                        <li><strong>Fraud Potential:</strong> Malicious nodes could propose incorrect state</li>
+                    </ul>
+                    
+                    <h5 class="font-medium mb-2">Solution: Interactive Fraud Proofs</h5>
+                    <p class="mb-4">A two-party protocol between proposer and challenger to verify state commitment correctness:</p>
+                    
+                    <h4 class="font-semibold mb-2">Interactive Fraud Proof Mechanism:</h4>
+                    
+                    <h5 class="font-medium mb-2">Protocol Steps:</h5>
+                    <ol class="list-decimal list-inside mb-4 space-y-1">
+                        <li><strong>State Proposal:</strong> Node proposes state commitment Root(S6)</li>
+                        <li><strong>Challenge Initiation:</strong> Another node challenges the commitment</li>
+                        <li><strong>Binary Search:</strong> Parties perform logarithmic search to find disagreement</li>
+                        <li><strong>Transaction Level:</strong> Narrow down to specific transaction causing disagreement</li>
+                        <li><strong>Network Decision:</strong> Global network validates the disputed transaction</li>
+                    </ol>
+                    
+                    <h5 class="font-medium mb-2">Example Fraud Proof:</h5>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                        <p class="mb-2"><strong>Scenario:</strong> Disagreement on state S3 out of S1-S6</p>
+                        <p class="mb-2"><strong>Binary Search:</strong> Narrow down to transaction TX2</p>
+                        <p class="mb-2"><strong>State Before TX2:</strong> A:10, B:10</p>
+                        <p class="mb-2"><strong>Transaction TX2:</strong> A→B (5 tokens)</p>
+                        <p class="mb-2"><strong>Claimed State After:</strong> A:5, B:16 (incorrect)</p>
+                        <p><strong>Correct State After:</strong> A:5, B:15</p>
+                    </div>
+                    
+                    <h4 class="font-semibold mb-2">Advantages of Interactive Fraud Proofs:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Logarithmic Complexity:</strong> O(log n) rounds for n transactions</li>
+                        <li><strong>No Trust Assumptions:</strong> Doesn't require honest majority per shard</li>
+                        <li><strong>Cryptographic Security:</strong> Based on cryptographic commitments</li>
+                        <li><strong>Efficient Verification:</strong> Network only needs to verify final disputed transaction</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Limitations and Considerations:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Liveness Dependency:</strong> Requires active challengers for security</li>
+                        <li><strong>Time Delays:</strong> Fraud proof process introduces confirmation delays</li>
+                        <li><strong>Economic Incentives:</strong> Need proper incentives for honest challenging</li>
+                        <li><strong>Network Load:</strong> Disputed transactions burden the global network</li>
+                    </ul>
+                `
+            }
+        ];
+
+        // Solidity tutorial data
+        const solidityTutorial = [
+            {
+                title: "Introduction to Solidity",
+                content: `
+                    <h4 class="font-semibold mb-2">What is Solidity?</h4>
+                    <p class="mb-4">Solidity is a statically-typed programming language designed for developing smart contracts that run on the Ethereum Virtual Machine (EVM). It's influenced by C++, Python, and JavaScript.</p>
+                    
+                    <h4 class="font-semibold mb-2">Key Features:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Contract-Oriented:</strong> Designed specifically for smart contracts</li>
+                        <li><strong>Statically Typed:</strong> Types are checked at compile time</li>
+                        <li><strong>Inheritance:</strong> Supports inheritance including multiple inheritance</li>
+                        <li><strong>Libraries:</strong> Reusable code that can be deployed once and used by many contracts</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Basic Smart Contract Structure:</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract MyFirstContract {
+    // State variables
+    string public message;
+    address public owner;
+    
+    // Constructor
+    constructor(string memory _message) {
+        message = _message;
+        owner = msg.sender;
+    }
+    
+    // Function to update message
+    function updateMessage(string memory _newMessage) public {
+        require(msg.sender == owner, "Only owner can update");
+        message = _newMessage;
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Key Components Explained:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>SPDX License:</strong> Specifies the license for the code</li>
+                        <li><strong>Pragma:</strong> Tells compiler which version of Solidity to use</li>
+                        <li><strong>Contract:</strong> Similar to a class in object-oriented programming</li>
+                        <li><strong>State Variables:</strong> Permanently stored on the blockchain</li>
+                        <li><strong>Constructor:</strong> Called once when contract is deployed</li>
+                        <li><strong>Functions:</strong> Executable units that can modify state or return values</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Data Types and Variables",
+                content: `
+                    <h4 class="font-semibold mb-2">Value Types:</h4>
+                    <p class="mb-4">These types always pass by value (copied when assigned or passed as arguments).</p>
+                    
+                    <h5 class="font-medium mb-2">Boolean:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">bool public isActive = true;
+bool public isCompleted = false;
+
+// Boolean operators
+bool result = (5 > 3) && (2 < 4); // true
+bool result2 = !isActive; // false</code></pre>
+                    
+                    <h5 class="font-medium mb-2">Integers:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// Unsigned integers (0 to 2^n - 1)
+uint8 public smallNumber = 255;      // 0 to 255
+uint256 public largeNumber = 1000000; // 0 to 2^256-1
+uint public defaultUint = 100;       // same as uint256
+
+// Signed integers (-2^(n-1) to 2^(n-1) - 1)
+int8 public temperature = -20;       // -128 to 127
+int256 public balance = -500;        // -2^255 to 2^255-1
+int public defaultInt = -100;        // same as int256</code></pre>
+                    
+                    <h5 class="font-medium mb-2">Address:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">address public owner;
+address payable public recipient;
+
+constructor() {
+    owner = msg.sender;
+    recipient = payable(msg.sender);
+}
+
+// Address methods
+function getBalance() public view returns (uint256) {
+    return owner.balance; // Returns balance in wei
+}
+
+function sendEther() public payable {
+    recipient.transfer(msg.value);
+}</code></pre>
+                    
+                    <h5 class="font-medium mb-2">Bytes:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// Fixed-size byte arrays
+bytes1 public singleByte = 0x42;
+bytes32 public hash = keccak256("Hello World");
+
+// Dynamic byte array
+bytes public data = "Hello, Blockchain!";
+
+function getDataLength() public view returns (uint) {
+    return data.length;
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Reference Types:</h4>
+                    <p class="mb-4">These types store a reference to the data location.</p>
+                    
+                    <h5 class="font-medium mb-2">Arrays:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// Fixed-size array
+uint[5] public fixedArray = [1, 2, 3, 4, 5];
+
+// Dynamic array
+uint[] public dynamicArray;
+string[] public names;
+
+function addNumber(uint _number) public {
+    dynamicArray.push(_number);
+}
+
+function getArrayLength() public view returns (uint) {
+    return dynamicArray.length;
+}</code></pre>
+                    
+                    <h5 class="font-medium mb-2">Mappings:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// Simple mapping
+mapping(address => uint256) public balances;
+
+// Nested mapping
+mapping(address => mapping(address => uint256)) public allowances;
+
+function setBalance(address _user, uint256 _amount) public {
+    balances[_user] = _amount;
+}
+
+function getBalance(address _user) public view returns (uint256) {
+    return balances[_user];
+}</code></pre>
+                    
+                    <h5 class="font-medium mb-2">Structs:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">struct Person {
+    string name;
+    uint age;
+    address wallet;
+}
+
+Person[] public people;
+mapping(string => Person) public personByName;
+
+function addPerson(string memory _name, uint _age) public {
+    Person memory newPerson = Person({
+        name: _name,
+        age: _age,
+        wallet: msg.sender
+    });
+    
+    people.push(newPerson);
+    personByName[_name] = newPerson;
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Variable Scope and Storage:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>State Variables:</strong> Stored on blockchain, persistent</li>
+                        <li><strong>Local Variables:</strong> Exist only during function execution</li>
+                        <li><strong>Global Variables:</strong> Provided by blockchain (msg.sender, block.timestamp)</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Functions and Modifiers",
+                content: `
+                    <h4 class="font-semibold mb-2">Function Syntax:</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">function functionName(parameter1, parameter2) 
+    public/private/internal/external 
+    view/pure/payable 
+    returns (returnType) {
+    // Function body
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Visibility Modifiers:</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract FunctionExamples {
+    uint private privateVar = 100;
+    uint internal internalVar = 200;
+    uint public publicVar = 300;
+    
+    // Public: Can be called from anywhere
+    function publicFunction() public pure returns (string memory) {
+        return "Anyone can call this";
+    }
+    
+    // External: Can only be called from outside the contract
+    function externalFunction() external pure returns (string memory) {
+        return "Only external calls";
+    }
+    
+    // Internal: Can be called from within this contract and derived contracts
+    function internalFunction() internal pure returns (string memory) {
+        return "Internal use only";
+    }
+    
+    // Private: Can only be called from within this contract
+    function privateFunction() private pure returns (string memory) {
+        return "Private to this contract";
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">State Mutability:</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract StateMutability {
+    uint public count = 0;
+    string public message = "Hello";
+    
+    // Pure: Doesn't read or modify state
+    function pureMath(uint a, uint b) public pure returns (uint) {
+        return a + b;
+    }
+    
+    // View: Reads state but doesn't modify it
+    function viewState() public view returns (uint, string memory) {
+        return (count, message);
+    }
+    
+    // Payable: Can receive Ether
+    function payableFunction() public payable {
+        count += msg.value;
+    }
+    
+    // Regular function: Can modify state
+    function modifyState(string memory _newMessage) public {
+        message = _newMessage;
+        count += 1;
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Function Modifiers:</h4>
+                    <p class="mb-4">Modifiers are reusable code that can be applied to functions to add common functionality:</p>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract ModifierExamples {
+    address public owner;
+    bool public paused = false;
+    
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    // Modifier to check if caller is owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not the owner");
+        _; // This is where the function body will be inserted
+    }
+    
+    // Modifier to check if contract is not paused
+    modifier whenNotPaused() {
+        require(!paused, "Contract is paused");
+        _;
+    }
+    
+    // Modifier with parameters
+    modifier minAmount(uint _minValue) {
+        require(msg.value >= _minValue, "Insufficient amount");
+        _;
+    }
+    
+    // Using modifiers
+    function pause() public onlyOwner {
+        paused = true;
+    }
+    
+    function unpause() public onlyOwner {
+        paused = false;
+    }
+    
+    function restrictedFunction() public onlyOwner whenNotPaused {
+        // Only owner can call when not paused
+    }
+    
+    function payableWithMin() public payable minAmount(1 ether) {
+        // Must send at least 1 ether
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Function Overloading:</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract Overloading {
+    function getData() public pure returns (string memory) {
+        return "No parameters";
+    }
+    
+    function getData(uint _id) public pure returns (string memory) {
+        return string(abi.encodePacked("ID: ", _id));
+    }
+    
+    function getData(string memory _name) public pure returns (string memory) {
+        return string(abi.encodePacked("Name: ", _name));
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Return Values:</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract ReturnExamples {
+    // Multiple return values
+    function getValues() public pure returns (uint, string memory, bool) {
+        return (42, "Hello", true);
+    }
+    
+    // Named return values
+    function getNamedValues() public pure returns (
+        uint number,
+        string memory text,
+        bool flag
+    ) {
+        number = 42;
+        text = "Hello";
+        flag = true;
+        // Explicit return not needed with named returns
+    }
+    
+    // Destructuring return values
+    function useReturnValues() public pure returns (uint) {
+        (uint num, , bool flag) = getValues();
+        return flag ? num : 0;
+    }
+}</code></pre>
+                `
+            },
+            {
+                title: "Events and Error Handling",
+                content: `
+                    <h4 class="font-semibold mb-2">Events:</h4>
+                    <p class="mb-4">Events are a way for smart contracts to communicate with the outside world. They're stored in the transaction log and can be listened to by external applications.</p>
+                    
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract EventExample {
+    // Event declarations
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event StatusChange(string status, uint256 timestamp);
+    
+    mapping(address => uint256) public balances;
+    mapping(address => mapping(address => uint256)) public allowances;
+    
+    constructor() {
+        balances[msg.sender] = 1000000;
+    }
+    
+    function transfer(address to, uint256 amount) public {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        
+        balances[msg.sender] -= amount;
+        balances[to] += amount;
+        
+        // Emit event
+        emit Transfer(msg.sender, to, amount);
+    }
+    
+    function approve(address spender, uint256 amount) public {
+        allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
+    }
+    
+    function updateStatus(string memory newStatus) public {
+        emit StatusChange(newStatus, block.timestamp);
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Event Features:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>Indexed Parameters:</strong> Up to 3 parameters can be indexed for efficient filtering</li>
+                        <li><strong>Gas Efficient:</strong> Events are much cheaper than storing data in state variables</li>
+                        <li><strong>External Access:</strong> Can be accessed by web3 applications and blockchain explorers</li>
+                        <li><strong>Historical Data:</strong> Provide a log of what happened in the contract</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Error Handling:</h4>
+                    <p class="mb-4">Solidity provides several ways to handle errors and revert transactions:</p>
+                    
+                    <h5 class="font-medium mb-2">1. Require Statements:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">function withdraw(uint amount) public {
+    require(amount > 0, "Amount must be greater than 0");
+    require(balances[msg.sender] >= amount, "Insufficient balance");
+    require(address(this).balance >= amount, "Contract has insufficient funds");
+    
+    balances[msg.sender] -= amount;
+    payable(msg.sender).transfer(amount);
+}</code></pre>
+                    
+                    <h5 class="font-medium mb-2">2. Assert Statements:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">function internalCalculation(uint a, uint b) internal pure returns (uint) {
+    uint result = a + b;
+    // Assert should only be used for internal errors that should never happen
+    assert(result >= a); // Check for overflow
+    return result;
+}</code></pre>
+                    
+                    <h5 class="font-medium mb-2">3. Revert Statements:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">function complexValidation(uint value) public {
+    if (value == 0) {
+        revert("Value cannot be zero");
+    }
+    
+    if (value > 1000) {
+        revert("Value too large");
+    }
+    
+    // Continue with function logic
+}</code></pre>
+                    
+                    <h5 class="font-medium mb-2">4. Custom Errors (Solidity 0.8.4+):</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// Define custom errors
+error InsufficientBalance(uint256 available, uint256 required);
+error Unauthorized(address caller);
+error InvalidAmount(uint256 amount);
+
+contract CustomErrorExample {
+    mapping(address => uint256) public balances;
+    address public owner;
+    
+    constructor() {
+        owner = msg.sender;
+        balances[msg.sender] = 1000;
+    }
+    
+    function transfer(address to, uint256 amount) public {
+        if (amount == 0) {
+            revert InvalidAmount(amount);
+        }
+        
+        if (balances[msg.sender] < amount) {
+            revert InsufficientBalance(balances[msg.sender], amount);
+        }
+        
+        balances[msg.sender] -= amount;
+        balances[to] += amount;
+    }
+    
+    function adminFunction() public {
+        if (msg.sender != owner) {
+            revert Unauthorized(msg.sender);
+        }
+        // Admin functionality here
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Try-Catch for External Calls:</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">interface IERC20 {
+    function transfer(address to, uint256 amount) external returns (bool);
+}
+
+contract SafeTransfer {
+    event TransferResult(bool success, string reason);
+    
+    function safeTransfer(address token, address to, uint256 amount) public {
+        try IERC20(token).transfer(to, amount) returns (bool success) {
+            if (success) {
+                emit TransferResult(true, "Transfer successful");
+            } else {
+                emit TransferResult(false, "Transfer returned false");
+            }
+        } catch Error(string memory reason) {
+            // Revert with reason string
+            emit TransferResult(false, reason);
+        } catch Panic(uint errorCode) {
+            // Panic errors (e.g., division by zero, array access out of bounds)
+            emit TransferResult(false, string(abi.encodePacked("Panic: ", errorCode)));
+        } catch (bytes memory lowLevelData) {
+            // Low-level errors
+            emit TransferResult(false, "Low-level error");
+        }
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Best Practices:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Use require() for user input validation</strong></li>
+                        <li><strong>Use assert() for internal consistency checks</strong></li>
+                        <li><strong>Provide clear error messages for better debugging</strong></li>
+                        <li><strong>Use custom errors for gas efficiency and better error handling</strong></li>
+                        <li><strong>Emit events for important state changes</strong></li>
+                    </ul>
+                `
+            },
+            {
+                title: "Inheritance and Interfaces",
+                content: `
+                    <h4 class="font-semibold mb-2">Inheritance:</h4>
+                    <p class="mb-4">Solidity supports inheritance, allowing contracts to inherit properties and methods from other contracts. This promotes code reuse and better organization.</p>
+                    
+                    <h5 class="font-medium mb-2">Basic Inheritance:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// Base contract
+contract Animal {
+    string public name;
+    uint public age;
+    
+    constructor(string memory _name, uint _age) {
+        name = _name;
+        age = _age;
+    }
+    
+    function makeSound() public virtual returns (string memory) {
+        return "Some generic animal sound";
+    }
+    
+    function sleep() public pure returns (string memory) {
+        return "The animal is sleeping";
+    }
+}
+
+// Derived contract
+contract Dog is Animal {
+    string public breed;
+    
+    constructor(string memory _name, uint _age, string memory _breed) 
+        Animal(_name, _age) {
+        breed = _breed;
+    }
+    
+    // Override parent function
+    function makeSound() public pure override returns (string memory) {
+        return "Woof! Woof!";
+    }
+    
+    // New function specific to Dog
+    function wagTail() public pure returns (string memory) {
+        return "The dog is wagging its tail";
+    }
+}</code></pre>
+                    
+                    <h5 class="font-medium mb-2">Multiple Inheritance:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract Mammal {
+    function breathe() public pure virtual returns (string memory) {
+        return "Breathing air";
+    }
+}
+
+contract Pet {
+    address public owner;
+    
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    function play() public pure virtual returns (string memory) {
+        return "Playing with owner";
+    }
+}
+
+// Multiple inheritance
+contract Cat is Animal, Mammal, Pet {
+    constructor(string memory _name, uint _age) 
+        Animal(_name, _age) 
+        Pet() {
+    }
+    
+    function makeSound() public pure override returns (string memory) {
+        return "Meow!";
+    }
+    
+    function breathe() public pure override returns (string memory) {
+        return "Cat breathing quietly";
+    }
+    
+    function play() public pure override returns (string memory) {
+        return "Cat playing with yarn";
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Abstract Contracts:</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// Abstract contract - cannot be deployed directly
+abstract contract Shape {
+    string public name;
+    
+    constructor(string memory _name) {
+        name = _name;
+    }
+    
+    // Abstract function - must be implemented by derived contracts
+    function calculateArea() public virtual returns (uint);
+    
+    // Concrete function that can be inherited
+    function getInfo() public view returns (string memory) {
+        return string(abi.encodePacked("Shape: ", name));
+    }
+}
+
+contract Circle is Shape {
+    uint public radius;
+    
+    constructor(uint _radius) Shape("Circle") {
+        radius = _radius;
+    }
+    
+    function calculateArea() public view override returns (uint) {
+        // Simplified calculation (π ≈ 3)
+        return 3 * radius * radius;
+    }
+}
+
+contract Rectangle is Shape {
+    uint public width;
+    uint public height;
+    
+    constructor(uint _width, uint _height) Shape("Rectangle") {
+        width = _width;
+        height = _height;
+    }
+    
+    function calculateArea() public view override returns (uint) {
+        return width * height;
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Interfaces:</h4>
+                    <p class="mb-4">Interfaces define a contract that other contracts must implement. They cannot have state variables or constructors.</p>
+                    
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// ERC20 Token Interface
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
+// Implementation of the interface
+contract MyToken is IERC20 {
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowances;
+    
+    uint256 private _totalSupply;
+    string public name;
+    string public symbol;
+    uint8 public decimals;
+    
+    constructor(string memory _name, string memory _symbol, uint256 _initialSupply) {
+        name = _name;
+        symbol = _symbol;
+        decimals = 18;
+        _totalSupply = _initialSupply * 10**decimals;
+        _balances[msg.sender] = _totalSupply;
+        emit Transfer(address(0), msg.sender, _totalSupply);
+    }
+    
+    function totalSupply() public view override returns (uint256) {
+        return _totalSupply;
+    }
+    
+    function balanceOf(address account) public view override returns (uint256) {
+        return _balances[account];
+    }
+    
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
+        require(recipient != address(0), "Transfer to zero address");
+        require(_balances[msg.sender] >= amount, "Insufficient balance");
+        
+        _balances[msg.sender] -= amount;
+        _balances[recipient] += amount;
+        emit Transfer(msg.sender, recipient, amount);
+        return true;
+    }
+    
+    function allowance(address owner, address spender) public view override returns (uint256) {
+        return _allowances[owner][spender];
+    }
+    
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        _allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
+        return true;
+    }
+    
+    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+        require(_allowances[sender][msg.sender] >= amount, "Insufficient allowance");
+        require(_balances[sender] >= amount, "Insufficient balance");
+        
+        _balances[sender] -= amount;
+        _balances[recipient] += amount;
+        _allowances[sender][msg.sender] -= amount;
+        
+        emit Transfer(sender, recipient, amount);
+        return true;
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Using Interfaces for Contract Interaction:</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract TokenManager {
+    IERC20 public token;
+    
+    constructor(address _tokenAddress) {
+        token = IERC20(_tokenAddress);
+    }
+    
+    function getTokenBalance(address account) public view returns (uint256) {
+        return token.balanceOf(account);
+    }
+    
+    function transferTokens(address to, uint256 amount) public {
+        require(token.transferFrom(msg.sender, to, amount), "Transfer failed");
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Function Overriding Rules:</h4>
+                    <ul class="list-disc list-inside mb-4 space-y-1">
+                        <li><strong>virtual:</strong> Function can be overridden by derived contracts</li>
+                        <li><strong>override:</strong> Function overrides a parent function</li>
+                        <li><strong>pure/view preservation:</strong> Override must maintain or strengthen mutability</li>
+                        <li><strong>Visibility:</strong> Override can make function more visible, not less</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold mb-2">Best Practices:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Use interfaces for contract interaction</strong></li>
+                        <li><strong>Keep inheritance hierarchies simple and logical</strong></li>
+                        <li><strong>Use abstract contracts for shared functionality</strong></li>
+                        <li><strong>Always mark functions as virtual if they might be overridden</strong></li>
+                        <li><strong>Document inheritance relationships clearly</strong></li>
+                    </ul>
+                `
+            },
+            {
+                title: "Advanced Concepts",
+                content: `
+                    <h4 class="font-semibold mb-2">Libraries:</h4>
+                    <p class="mb-4">Libraries are reusable pieces of code that can be deployed once and used by multiple contracts. They help reduce gas costs and promote code reuse.</p>
+                    
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// SafeMath library to prevent overflow/underflow
+library SafeMath {
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a, "SafeMath: addition overflow");
+        return c;
+    }
+    
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b <= a, "SafeMath: subtraction overflow");
+        return a - b;
+    }
+    
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        if (a == 0) return 0;
+        uint256 c = a * b;
+        require(c / a == b, "SafeMath: multiplication overflow");
+        return c;
+    }
+    
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b > 0, "SafeMath: division by zero");
+        return a / b;
+    }
+}
+
+// Using the library
+contract Calculator {
+    using SafeMath for uint256;
+    
+    function calculate(uint256 a, uint256 b) public pure returns (uint256) {
+        return a.add(b).mul(2);
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Assembly (Yul):</h4>
+                    <p class="mb-4">Inline assembly allows for low-level operations and gas optimization:</p>
+                    
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract AssemblyExample {
+    function getCodeSize(address addr) public view returns (uint size) {
+        assembly {
+            size := extcodesize(addr)
+        }
+    }
+    
+    function efficientHash(bytes memory data) public pure returns (bytes32 result) {
+        assembly {
+            result := keccak256(add(data, 0x20), mload(data))
+        }
+    }
+    
+    function memoryManipulation() public pure returns (bytes32) {
+        bytes32 result;
+        assembly {
+            let ptr := mload(0x40)  // Get free memory pointer
+            mstore(ptr, 0x1234567890abcdef)  // Store data
+            result := mload(ptr)  // Load data
+        }
+        return result;
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Gas Optimization Techniques:</h4>
+                    
+                    <h5 class="font-medium mb-2">1. Storage vs Memory vs Calldata:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract GasOptimization {
+    struct User {
+        string name;
+        uint age;
+        bool active;
+    }
+    
+    User[] public users;
+    
+    // Expensive: reads from storage multiple times
+    function inefficientRead() public view returns (uint totalAge) {
+        for (uint i = 0; i < users.length; i++) {
+            if (users[i].active) {
+                totalAge += users[i].age;
+            }
+        }
+    }
+    
+    // Optimized: load to memory once
+    function efficientRead() public view returns (uint totalAge) {
+        User[] memory _users = users;
+        for (uint i = 0; i < _users.length; i++) {
+            if (_users[i].active) {
+                totalAge += _users[i].age;
+            }
+        }
+    }
+    
+    // Use calldata for external functions
+    function processData(uint[] calldata data) external pure returns (uint sum) {
+        for (uint i = 0; i < data.length; i++) {
+            sum += data[i];
+        }
+    }
+}</code></pre>
+                    
+                    <h5 class="font-medium mb-2">2. Packed Structs:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract PackedStructs {
+    // Inefficient: uses 3 storage slots
+    struct UnpackedUser {
+        uint128 id;      // 16 bytes
+        uint256 balance; // 32 bytes  
+        bool active;     // 1 byte
+    }
+    
+    // Efficient: uses 2 storage slots
+    struct PackedUser {
+        uint128 id;      // 16 bytes
+        bool active;     // 1 byte
+        uint128 balance; // 16 bytes (assuming balance < 2^128)
+    }
+    
+    // Even more efficient for small values
+    struct UltraPackedUser {
+        uint64 id;       // 8 bytes
+        bool active;     // 1 byte
+        uint32 age;      // 4 bytes
+        uint32 score;    // 4 bytes
+        // All fit in 1 storage slot (32 bytes)
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Security Patterns:</h4>
+                    
+                    <h5 class="font-medium mb-2">1. Reentrancy Guard:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract ReentrancyGuard {
+    bool private locked;
+    
+    modifier noReentrant() {
+        require(!locked, "Reentrant call");
+        locked = true;
+        _;
+        locked = false;
+    }
+    
+    mapping(address => uint) public balances;
+    
+    function withdraw() public noReentrant {
+        uint amount = balances[msg.sender];
+        require(amount > 0, "No balance to withdraw");
+        
+        balances[msg.sender] = 0;  // Update state before external call
+        
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Transfer failed");
+    }
+}</code></pre>
+                    
+                    <h5 class="font-medium mb-2">2. Access Control:</h5>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">contract AccessControl {
+    mapping(bytes32 => mapping(address => bool)) private roles;
+    
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    
+    event RoleGranted(bytes32 indexed role, address indexed account);
+    event RoleRevoked(bytes32 indexed role, address indexed account);
+    
+    constructor() {
+        _grantRole(ADMIN_ROLE, msg.sender);
+    }
+    
+    modifier onlyRole(bytes32 role) {
+        require(hasRole(role, msg.sender), "Access denied");
+        _;
+    }
+    
+    function hasRole(bytes32 role, address account) public view returns (bool) {
+        return roles[role][account];
+    }
+    
+    function grantRole(bytes32 role, address account) public onlyRole(ADMIN_ROLE) {
+        _grantRole(role, account);
+    }
+    
+    function revokeRole(bytes32 role, address account) public onlyRole(ADMIN_ROLE) {
+        _revokeRole(role, account);
+    }
+    
+    function _grantRole(bytes32 role, address account) internal {
+        if (!hasRole(role, account)) {
+            roles[role][account] = true;
+            emit RoleGranted(role, account);
+        }
+    }
+    
+    function _revokeRole(bytes32 role, address account) internal {
+        if (hasRole(role, account)) {
+            roles[role][account] = false;
+            emit RoleRevoked(role, account);
+        }
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Upgradeable Contracts (Proxy Pattern):</h4>
+                    <pre class="code-container p-4 rounded-lg mb-4 overflow-x-auto"><code class="language-solidity">// Simple proxy contract
+contract Proxy {
+    address public implementation;
+    address public admin;
+    
+    constructor(address _implementation) {
+        implementation = _implementation;
+        admin = msg.sender;
+    }
+    
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Only admin");
+        _;
+    }
+    
+    function upgrade(address newImplementation) external onlyAdmin {
+        implementation = newImplementation;
+    }
+    
+    fallback() external payable {
+        address impl = implementation;
+        assembly {
+            calldatacopy(0, 0, calldatasize())
+            let result := delegatecall(gas(), impl, 0, calldatasize(), 0, 0)
+            returndatacopy(0, 0, returndatasize())
+            
+            switch result
+            case 0 { revert(0, returndatasize()) }
+            default { return(0, returndatasize()) }
+        }
+    }
+}</code></pre>
+                    
+                    <h4 class="font-semibold mb-2">Best Practices Summary:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Always use latest Solidity version for security fixes</strong></li>
+                        <li><strong>Implement proper access controls and permission systems</strong></li>
+                        <li><strong>Use reentrancy guards for functions that make external calls</strong></li>
+                        <li><strong>Optimize gas usage through efficient data structures and algorithms</strong></li>
+                        <li><strong>Write comprehensive tests for all functionality</strong></li>
+                        <li><strong>Consider upgradeable patterns for long-term maintainability</strong></li>
+                        <li><strong>Implement proper error handling and event logging</strong></li>
+                    </ul>
+                `
+            }
+        ];
+
+        // Generate blockchain concepts
+        function generateBlockchainConcepts() {
+            const container = document.querySelector('#concepts-content .grid');
+            container.innerHTML = '';
+
+            blockchainConcepts.forEach((concept, index) => {
+                const card = document.createElement('div');
+                card.className = 'concept-card bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden';
+                
+                card.innerHTML = `
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-primary">${concept.title}</h3>
+                            <button onclick="toggleConcept(${index})" class="concept-toggle text-gray-500 hover:text-primary transition-colors">
+                                <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="concept-content hidden text-gray-700 dark:text-gray-300">
+                            ${concept.content}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Generate Solidity tutorial
+        function generateSolidityTutorial() {
+            const container = document.querySelector('#solidity-content .space-y-8');
+            container.innerHTML = '';
+
+            solidityTutorial.forEach((section, index) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden';
+                
+                card.innerHTML = `
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-primary">${section.title}</h3>
+                            <button onclick="toggleSolidity(${index})" class="solidity-toggle text-gray-500 hover:text-primary transition-colors">
+                                <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="solidity-content hidden text-gray-700 dark:text-gray-300">
+                            ${section.content}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Toggle concept visibility
+        function toggleConcept(index) {
+            const cards = document.querySelectorAll('.concept-card');
+            const content = cards[index].querySelector('.concept-content');
+            const toggle = cards[index].querySelector('.concept-toggle svg');
+            
+            content.classList.toggle('hidden');
+            toggle.classList.toggle('rotate-180');
+        }
+
+        // Toggle solidity section visibility
+        function toggleSolidity(index) {
+            const cards = document.querySelectorAll('#solidity-content .bg-white, #solidity-content .dark\\:bg-gray-800');
+            const content = cards[index].querySelector('.solidity-content');
+            const toggle = cards[index].querySelector('.solidity-toggle svg');
+            
+            content.classList.toggle('hidden');
+            toggle.classList.toggle('rotate-180');
+        }
+
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active-tab');
+                btn.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-300', 'dark:hover:bg-gray-600');
+            });
+            
+            // Show selected tab content
+            document.getElementById(`${tabName}-content`).classList.remove('hidden');
+            
+            // Add active class to selected tab
+            const activeTab = document.getElementById(`${tabName}-tab`);
+            activeTab.classList.add('active-tab');
+            activeTab.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-300', 'dark:hover:bg-gray-600');
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            generateBlockchainConcepts();
+            generateSolidityTutorial();
+            
+            // Initialize Prism for syntax highlighting
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAll();
+            }
+        });
+
+        // Make functions globally available
+        window.toggleConcept = toggleConcept;
+        window.toggleSolidity = toggleSolidity;
+        window.showTab = showTab;
+    </script>
+</body>
+</html>
